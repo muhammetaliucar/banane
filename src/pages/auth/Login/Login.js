@@ -26,7 +26,7 @@ const Login = ({navigation}) => {
       //   formValues.password,
       // );
       setLoading(false);
-      navigation.reset({routes: [{name: 'Messages'}]});
+
       showMessage({
         message: 'Başarıyla giriş yaptınız',
         type: 'success',

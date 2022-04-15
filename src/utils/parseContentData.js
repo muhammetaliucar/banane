@@ -10,3 +10,5 @@ export default function (data) {
       return a.data > b.data ? -1 : a.date > b.date ? 1 : 0;
     });
 }
+
+////////////// tarihleri sıraladık.

@@ -12,14 +12,14 @@ const Messages = () => {
   console.log(auth().currentUser.email);
   const [inputModalVisible, setInputModalVisible] = useState(false);
   const [contentList, setContentList] = useState({});
-  const renderItem = ({item}) => <MessagesCard data={item} />;
 
   useEffect(() => {
     database()
       .ref('messages/')
       .on('value', snapshot => {
         const contentData = snapshot.val();
-        let parsedData = parseContentData(contentData);
+
+        const parsedData = parseContentData(contentData || {});
         setContentList(parsedData);
       });
   }, []);
@@ -35,7 +35,9 @@ const Messages = () => {
     const contentObj = {
       text: content,
       userName: userMail.split('@')[0],
-      data: new Date().toISOString(),
+      date: new Date().toISOString(),
+      dislike: 0,
+      like: 0,
     };
     database().ref('messages/').push(contentObj);
   };
@@ -44,17 +46,24 @@ const Messages = () => {
     setInputModalVisible(!inputModalVisible);
   };
 
-  // const [refreshing, setRefreshing] = React.useState(false);
-
-  // const onRefresh = React.useCallback(() => {
-  //   setRefreshing(true);
-  //   wait(2000).then(() => setRefreshing(false));
-  // }, []);
-
-  const logout = async () => {
-    await auth().signOut();
-    console.log(auth().currentUser.email);
+  const handleBanane = item => {
+    database()
+      .ref(`messages/${item.id}`)
+      .update({dislike: item.dislike + 1});
   };
+  const handleLikeBanane = item => {
+    database()
+      .ref(`messages/${item.id}`)
+      .update({like: item.like + 1});
+  };
+
+  const renderItem = ({item}) => (
+    <MessagesCard
+      data={item}
+      onBanane={() => handleBanane(item)}
+      onLike={() => handleLikeBanane(item)}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,12 +73,7 @@ const Messages = () => {
         onClose={handleInputToggle}
         onSend={handleSendContent}
       />
-      <FlatList
-        // onRefresh={onRefresh}
-        data={contentList}
-        renderItem={renderItem}
-      />
-      <Button title="çıkış yap" onPress={logout} />
+      <FlatList data={contentList} renderItem={renderItem} />
     </SafeAreaView>
   );
 };
