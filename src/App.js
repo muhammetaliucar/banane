@@ -12,18 +12,18 @@ import auth from '@react-native-firebase/auth';
 import {createDrawerNavigator, DrawerActions} from '@react-navigation/drawer';
 import CustomDrawerMessages from './components/CustomDrawerMessages/CustomDrawerMessages';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+const BottomTab = createBottomTabNavigator();
 
 const App = ({navigation}) => {
   const [userSession, setUserSession] = useState();
-  const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
     auth().onAuthStateChanged(user => {
       setUserSession(!!user);
-      setUserInfo(user);
     });
   }, []);
 
@@ -40,33 +40,30 @@ const App = ({navigation}) => {
     );
   };
 
-  // const DrawerMessages = ({navigation}) => {
-  //   const userMail = auth().currentUser.email;
-  //   const nickName = userMail.split('@')[0];
-
-  //   return (
-  //     <Drawer.Navigator
-  //       drawerContent={props => <CustomDrawerMessages {...props} />}>
-  //       <Drawer.Screen
-  //         options={{
-  //           headerRight: () => (
-  //             <MaterialCommunityIcons
-  //               name="logout"
-  //               onPress={() => auth().signOut()}
-  //               size={30}
-  //             />
-  //           ),
-  //           headerShown: true,
-  //           headerTitle: 'dertler',
-  //           headerTintColor: colors.darkgreen,
-  //           headerTitleAlign: 'center',
-  //         }}
-  //         name="DrawerM"
-  //         component={Messages}
-  //       />
-  //     </Drawer.Navigator>
-  //   );
-  // };
+  const DrawerMessages = ({navigation}) => {
+    return (
+      <Drawer.Navigator
+        drawerContent={props => <CustomDrawerMessages {...props} />}>
+        <Drawer.Screen
+          options={{
+            headerRight: () => (
+              <MaterialCommunityIcons
+                name="logout"
+                onPress={() => auth().signOut()}
+                size={30}
+              />
+            ),
+            headerShown: true,
+            headerTitle: 'dertler',
+            headerTintColor: colors.darkgreen,
+            headerTitleAlign: 'center',
+          }}
+          name="DrawerM"
+          component={Messages}
+        />
+      </Drawer.Navigator>
+    );
+  };
 
   return (
     <NavigationContainer>
@@ -78,23 +75,7 @@ const App = ({navigation}) => {
         {!userSession ? (
           <Stack.Screen name="AuthStack" component={AuthStack} />
         ) : (
-          <Stack.Screen
-            name="Messages"
-            options={{
-              headerRight: () => (
-                <MaterialCommunityIcons
-                  name="logout"
-                  onPress={() => auth().signOut()}
-                  size={30}
-                />
-              ),
-              headerShown: true,
-              headerTitle: 'dertler',
-              headerTintColor: colors.darkgreen,
-              headerTitleAlign: 'center',
-            }}
-            component={Messages}
-          />
+          <Stack.Screen name="Messages" component={DrawerMessages} />
         )}
       </Stack.Navigator>
       <FlashMessage position={'top'} />

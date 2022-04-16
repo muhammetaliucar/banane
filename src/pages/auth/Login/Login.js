@@ -20,11 +20,10 @@ const Login = ({navigation}) => {
   const handleFormSubmit = async formValues => {
     try {
       setLoading(true);
-      await auth().signInWithEmailAndPassword('ali@mail.com', 'hellodb123');
-      // await auth().signInWithEmailAndPassword(
-      //   formValues.usermail,
-      //   formValues.password,
-      // );
+      await auth().signInWithEmailAndPassword(
+        formValues.usermail,
+        formValues.password,
+      );
       setLoading(false);
 
       showMessage({
@@ -44,7 +43,7 @@ const Login = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>bana ne?</Text>
+      <Text style={styles.header}>formV</Text>
       <Formik initialValues={initialForm} onSubmit={handleFormSubmit}>
         {({values, handleChange, handleSubmit}) => (
           <>

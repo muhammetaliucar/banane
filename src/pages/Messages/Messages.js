@@ -67,13 +67,13 @@ const Messages = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FloatingButton icon="plus" onPress={handleInputToggle} />
       <ContentInputModal
         visible={inputModalVisible}
         onClose={handleInputToggle}
         onSend={handleSendContent}
       />
       <FlatList data={contentList} renderItem={renderItem} />
+      <FloatingButton icon="plus" onPress={handleInputToggle} />
     </SafeAreaView>
   );
 };
