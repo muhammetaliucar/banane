@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {View, SafeAreaView, Button, Text, FlatList} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  Button,
+  Text,
+  FlatList,
+  Dimensions,
+} from 'react-native';
 import FloatingButton from '../../components/FloatingButton';
 import styles from './Messages.style';
 import ContentInputModal from '../../components/modal/ContentInputModal';
@@ -7,13 +14,18 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import parseContentData from '../../utils/parseContentData';
 import MessagesCard from '../../components/cards/MesagesCard';
+import Skeleton from './Skeleton';
+
+const deviceSize = Dimensions.get('window');
 
 const Messages = () => {
   console.log(auth().currentUser.email);
   const [inputModalVisible, setInputModalVisible] = useState(false);
   const [contentList, setContentList] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     database()
       .ref('messages/')
       .on('value', snapshot => {
@@ -21,6 +33,7 @@ const Messages = () => {
 
         const parsedData = parseContentData(contentData || {});
         setContentList(parsedData);
+        setLoading(false);
       });
   }, []);
 
@@ -72,8 +85,20 @@ const Messages = () => {
         onClose={handleInputToggle}
         onSend={handleSendContent}
       />
-      <FlatList data={contentList} renderItem={renderItem} />
-      <FloatingButton icon="plus" onPress={handleInputToggle} />
+      {loading ? (
+        <>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </>
+      ) : (
+        <>
+          <FlatList data={contentList} renderItem={renderItem} />
+          <FloatingButton icon="plus" onPress={handleInputToggle} />
+        </>
+      )}
     </SafeAreaView>
   );
 };

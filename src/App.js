@@ -18,7 +18,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator();
 
-const App = ({navigation}) => {
+const App = () => {
   const [userSession, setUserSession] = useState();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const App = ({navigation}) => {
     );
   };
 
-  const DrawerMessages = ({navigation}) => {
+  const DrawerMessages = () => {
     return (
       <Drawer.Navigator
         drawerContent={props => <CustomDrawerMessages {...props} />}>
